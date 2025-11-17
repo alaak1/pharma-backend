@@ -48,4 +48,17 @@ class MedicineController extends Controller
             'medicine' => $medicine
         ], 200);
     }
+
+    public function show($id)
+    {
+        $medicine = Medicine::find($id);
+
+        if (!$medicine) {
+            return response()->json([
+                'message' => 'Medicine not found'
+            ], 404);
+        }
+
+        return response()->json($medicine);
+    }
 }
