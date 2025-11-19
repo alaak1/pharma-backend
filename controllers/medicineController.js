@@ -23,8 +23,23 @@ export const getById = async (req, res) => {
 };
 
 export const create = async (req, res) => {
-  const medicine = await Medicine.create(req.body);
-  res.status(201).json(medicine);
+  try {
+    const medicine = await Medicine.create(req.body);
+
+    return res.status(201).json({
+      message: "Medicine created successfully",
+      data: medicine
+    });
+    
+  } catch (error) {
+    console.error("Error creating medicine:", error);
+
+    return res.status(500).json({
+      message: "Failed to create medicine",
+      error: error.message,
+      details: error
+    });
+  }
 };
 
 export const update = async (req, res) => {
