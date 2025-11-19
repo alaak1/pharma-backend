@@ -15,7 +15,8 @@ app.get("/api/ping", (req, res) => res.json({ status: "online" }));
 app.use("/api", authRoutes);
 app.use("/api/medicine", medicineRoutes);
 
-const PORT = process.env.PORT || 8080;
-sequelize.sync().then(() => {
-  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-});
+sequelize.sync()
+  .then(() => console.log("✅ DB synced successfully"))
+  .catch(err => console.error("❌ DB sync error:", err));
+
+export default app; // 👈 Vercel needs this
