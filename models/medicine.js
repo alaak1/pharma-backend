@@ -1,11 +1,17 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../config/db.js";
+import { ulid } from "ulid";
+
 
 const Medicine = sequelize.define(
   "Medicine",
   {
-    id: { type: DataTypes.STRING, primaryKey: true },
-    med_name: DataTypes.STRING,
+    id: {
+        type: DataTypes.STRING(26),
+        primaryKey: true,
+        defaultValue: () => ulid()
+    },
+   med_name: DataTypes.STRING,
     closet: DataTypes.STRING,
     category: DataTypes.STRING,
     description: DataTypes.TEXT,
