@@ -17,7 +17,7 @@ const Medicine = sequelize.define(
     price: { type: DataTypes.DECIMAL(10, 2), defaultValue: 0.0 },
   },
   {
-    tableName: "medicines",     
+    tableName: "medicine",     
     freezeTableName: true,    
     timestamps: true
   }
