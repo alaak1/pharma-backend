@@ -7,18 +7,21 @@ dotenv.config();
 console.log("Connecting to DB:", process.env.DB_HOST, process.env.DB_PORT, process.env.DB_DATABASE);
 
 const sequelize = new Sequelize(
-  process.env.DB_DATABASE,       // database
-  process.env.DB_USERNAME,       // username
-  process.env.DB_PASSWORD,       // password
+  process.env.DB_DATABASE,      
+  process.env.DB_USERNAME,       
+  process.env.DB_PASSWORD,      
   {
-    host: process.env.DB_HOST,   // hostname
-    port: process.env.DB_PORT,   // port number
+    host: process.env.DB_HOST,  
+    port: process.env.DB_PORT,   
     dialect: "mysql",
-    dialectModule: mysql2,       // <-- use imported mysql2
-    logging: false,
+    dialectModule: mysql2,
     dialectOptions: {
-      connectTimeout: 60000,
-    },
+      ssl: {
+        require: true,
+        rejectUnauthorized: false,
+      }
+    },      
+    logging: false,
   }
 );
 
