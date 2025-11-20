@@ -23,6 +23,9 @@ export const getById = async (req, res) => {
 };
 
 export const create = async (req, res) => {
+    console.log("REQ BODY FROM FRONTEND:", req.body);
+console.log("RAW BODY:", req.rawBody);
+console.log("HEADERS:", req.headers);
   try {
     const medicine = await Medicine.create(req.body);
 
