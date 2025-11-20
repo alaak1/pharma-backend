@@ -24,16 +24,62 @@ export const register = async (req, res) => {
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const user = await User.findOne({ where: { email } });
 
+    const user = await User.findOne({ where: { email } });
     if (!user) return res.status(404).json({ error: "User not found" });
 
     const valid = await bcrypt.compare(password, user.password);
     if (!valid) return res.status(401).json({ error: "Invalid credentials" });
 
-    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: "7d" });
-    res.json({ message: "Login successful", token, user });
+    // SHORT-LIVED ACCESS TOKEN (1 hour)
+    const accessToken = jwt.sign(
+      { id: user.id },
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" }
+    );
+
+    // LONG-LIVED REFRESH TOKEN (30 days)
+    const refreshToken = jwt.sign(
+      { id: user.id },
+      process.env.JWT_REFRESH_SECRET,
+      { expiresIn: "30d" }
+    );
+
+    return res.json({
+      message: "Login successful",
+      token: accessToken,
+      refreshToken,
+      user
+    });
+
   } catch (err) {
-    res.status(500).json({ error: "Login failed", details: err.message });
+    return res.status(500).json({
+      error: "Login failed",
+      details: err.message
+    });
+  }
+};
+
+export const refresh = async (req, res) => {
+  const { refreshToken } = req.body;
+
+  if (!refreshToken)
+    return res.status(401).json({ error: "Missing refresh token" });
+
+  try {
+    const payload = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
+
+    const newAccessToken = jwt.sign(
+      { id: payload.id },
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" }
+    );
+
+    return res.json({
+      token: newAccessToken
+    });
+
+  } catch (err) {
+    return res.status(401).json({ error: "Invalid refresh token" });
   }
 };
