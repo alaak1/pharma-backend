@@ -51,3 +51,11 @@ export const update = async (req, res) => {
   await medicine.update(req.body);
   res.json({ message: "Updated successfully", medicine });
 };
+
+export const remove = async (req, res) => {
+  const medicine = await Medicine.findByPk(req.params.id);
+  if (!medicine) return res.status(404).json({ message: "Not found" });
+
+  await medicine.destroy();
+  res.json({ message: "Deleted successfully", id: req.params.id });
+};
