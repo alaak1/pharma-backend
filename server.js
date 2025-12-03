@@ -1,7 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
-import sequelize from "./config/db.js";
+const sequelize = await import("./config/db.js").then(mod => mod.default);
 import authRoutes from "./routes/authRoutes.js";
 import medicineRoutes from "./routes/medicineRoutes.js";
 
@@ -9,7 +9,8 @@ dotenv.config();
 const app = express();
 
 app.use(cors());
-app.use(express.json());
+app.use(express.json());        // <-- REQUIRED
+app.use(express.urlencoded({ extended: true })); // <-- REQUIRED
 
 app.get("/api/ping", (req, res) => res.json({ status: "online" }));
 app.use("/api", authRoutes);
